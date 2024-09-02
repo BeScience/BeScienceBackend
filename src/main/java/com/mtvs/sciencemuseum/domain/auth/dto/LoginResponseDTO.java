@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponseDTO {
     @Schema(description = "액세스 토큰", example = "access_token_example")
-    String accessToken;
+    private String accessToken;
 }
