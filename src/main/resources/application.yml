@@ -22,6 +22,9 @@ spring:
     init:
       mode: always
 
+ai:
+  url: ${AI_URL}
+  port: ${AI_PORT}
 
 jwt:
   secret: ${JWT_SECRET}
