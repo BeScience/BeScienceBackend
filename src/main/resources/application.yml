@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: science-museum-backend
   config:
     import: optional:file:.env[.properties]
 
@@ -16,7 +18,7 @@ spring:
         format_sql: 'true'
     show-sql: 'true'
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
   sql:
     init:
@@ -29,3 +31,14 @@ ai:
 jwt:
   secret: ${JWT_SECRET}
   expiration: ${JWT_EXPIRATION}
+
+management:
+  endpoints:
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: health, prometheus, info
+  metrics:
+    tags:
+      application: ${spring.application.name}
