@@ -1,8 +1,10 @@
 import React from 'react';
-import {ExperienceData} from "./Component/ExperienceData";
+
 import {Route, Routes} from "react-router-dom";
-import {LoginData} from "./Component/LoginData";
+
 import {Layout} from "./Layout/Layout";
+import LoginData from "./Component/LoginData";
+import ExperienceData from "./Component/ExperienceData";
 function App() {
   return (
         <Routes>
