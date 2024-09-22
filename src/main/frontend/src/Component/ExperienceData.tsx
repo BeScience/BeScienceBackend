@@ -20,6 +20,11 @@ const ExperienceData = () => {
     const [error, setError] = useState<string | null>(null);
     const [chartType, setChartType] = useState<string>('bar');
 
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage] = useState<number>(10);
+    const [startDate, setStartDate] = useState<string>('');
+    const [endDate, setEndDate] = useState<string>('');
+
     useEffect(() => {
         const fetchExperienceData = async () => {
             try {
@@ -36,10 +41,6 @@ const ExperienceData = () => {
         fetchExperienceData();
     }, []);
 
-    useEffect(() => {
-        // 새로운 데이터가 추가될 때마다 차트 데이터를 업데이트
-    }, [experienceData]);
-
     if (loading) {
         return <LoadingMessage>Loading...</LoadingMessage>;
     }
@@ -48,7 +49,24 @@ const ExperienceData = () => {
         return <ErrorMessage>{error}</ErrorMessage>;
     }
 
-    const activityCounts = experienceData.reduce((acc, data) => {
+    // 날짜 필터링
+    const filteredData = experienceData.filter(data => {
+        const dataDate = new Date(data.startAt); // 날짜 형식에 따라 조정 필요
+        const start = startDate ? new Date(startDate) : null;
+        const end = endDate ? new Date(endDate) : null;
+
+        return (!start || dataDate >= start) && (!end || dataDate <= end);
+    });
+
+    // 페이지네이션 처리
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
+
+    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+    // 필터링된 데이터를 기반으로 차트 데이터 생성
+    const activityCounts = filteredData.reduce((acc, data) => {
         acc[data.enter] = (acc[data.enter] || 0) + 1;
         return acc;
     }, {} as Record<string, number>);
@@ -64,9 +82,29 @@ const ExperienceData = () => {
         ],
     };
 
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
     return (
         <Container>
             <h1>Stamp Records</h1>
+
+            <DateFilter>
+                <label>시작일:</label>
+                <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
+                <label>종료일:</label>
+                <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+            </DateFilter>
+
             <Table>
                 <thead>
                 <tr>
@@ -78,7 +116,7 @@ const ExperienceData = () => {
                 </tr>
                 </thead>
                 <tbody>
-                {experienceData.map((data, index) => (
+                {currentItems.map((data, index) => (
                     <tr key={index}>
                         <td>{data.nickname}</td>
                         <td>{data.enter}</td>
@@ -89,6 +127,12 @@ const ExperienceData = () => {
                 ))}
                 </tbody>
             </Table>
+
+            <Pagination>
+                <button onClick={handlePreviousPage} disabled={currentPage === 1}>이전</button>
+                <span>{currentPage} / {totalPages}</span>
+                <button onClick={handleNextPage} disabled={currentPage === totalPages}>다음</button>
+            </Pagination>
 
             <ChartContainer>
                 <h2>Activity Distribution</h2>
@@ -112,6 +156,20 @@ const Container = styled.div`
   padding: 20px;
 `;
 
+const DateFilter = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+
+  label {
+    margin: 0 10px;
+  }
+
+  input {
+    margin: 0 10px;
+  }
+`;
+
 const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
@@ -124,6 +182,22 @@ const Table = styled.table`
 
   th {
     background-color: #f2f2f2;
+  }
+`;
+
+const Pagination = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    margin: 0 10px;
+    padding: 5px 10px;
+  }
+
+  span {
+    font-size: 16px;
   }
 `;
 
@@ -143,16 +217,19 @@ const ErrorMessage = styled.div`
 const ChartContainer = styled.div`
   margin-top: 30px;
   width: 100%;
-  max-width: 800px; /* 차트의 최대 가로 길이 */
-  height: 400px; /* 차트의 높이 */
+  max-width: 800px;
+  height: 400px;
 `;
-
 
 const ChartSelector = styled.div`
   margin-bottom: 20px;
 `;
 
 export default ExperienceData;
+
+
+
+
 
 
 
