@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
@@ -77,4 +79,7 @@ public class AuthController {
         errorResponse.setMessage(e.getMessage());
         return ResponseEntity.status(e.getErrorCode().getStatus()).body(errorResponse);
     }
+
+
+
 }
