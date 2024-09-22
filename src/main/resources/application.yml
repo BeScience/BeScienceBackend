@@ -10,7 +10,7 @@ spring:
     password: ${DB_USER_PASSWORD}
     url: ${DB_USER_URL}
 
-  # JPA config
+  # JPA configF
   jpa:
     database: mysql
     properties:
