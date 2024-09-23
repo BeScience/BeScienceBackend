@@ -43,15 +43,17 @@ public class PostitService {
     // 엔티티를 데이터베이스에 저장
     public Postit savePostit(Postit postit) {
 
-        LoginedInfo loginUser = authService.getLoginInfo();
-        log.info("[POSTIT] 포스트잇 저장: user: {}, postit: {}", loginUser.getUsername(), postit);
+//        LoginedInfo loginUser = authService.getLoginInfo();
+//        log.info("[POSTIT] 포스트잇 저장: user: {}, postit: {}", loginUser.getUsername(), postit);
+        log.info("[POSTIT] 포스트잇 저장");
         return postitRepository.save(postit);
     }
 
     public List<PostitDto> getAllPostits() {
 
-        LoginedInfo loginUser = authService.getLoginInfo();
-        log.info("[POSTIT] 포스트잇 조회: user: {}", loginUser.getUsername());
+//        LoginedInfo loginUser = authService.getLoginInfo();
+//        log.info("[POSTIT] 포스트잇 조회: user: {}", loginUser.getUsername());
+        log.info("[POSTIT] 포스트잇 조회.");
 
         List<Postit> postits = postitRepository.findAll();
         return  postits.stream()
@@ -62,8 +64,10 @@ public class PostitService {
     /*포스트잇 전체 삭제*/
     public void clearPostits() {
 
-        LoginedInfo loginUser = authService.getLoginInfo();
-        log.info("[POSTIT] 포스트잇 전체 삭제: user: {}", loginUser.getUsername());
+//        LoginedInfo loginUser = authService.getLoginInfo();
+//        log.info("[POSTIT] 포스트잇 전체 삭제: user: {}", loginUser.getUsername());
+
+        log.info("[POSTIT] 포스트잇 전체 삭제");
 
         postitRepository.deleteAll();
     }
