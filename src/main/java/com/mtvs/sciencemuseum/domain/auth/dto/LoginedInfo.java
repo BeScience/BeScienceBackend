@@ -7,4 +7,5 @@ import lombok.Data;
 public class LoginedInfo {
     private String username;
     private Role role;
+    private Boolean isLogin;
 }

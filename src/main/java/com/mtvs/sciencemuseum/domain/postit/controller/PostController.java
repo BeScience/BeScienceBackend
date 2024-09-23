@@ -30,4 +30,9 @@ public class PostController {
     public List<PostitDto> getAllPostits(){
         return  postitService.getAllPostits();
     }
+
+    @DeleteMapping
+    public void clearPostit(){
+        postitService.clearPostits();
+    }
 }

@@ -1,11 +1,13 @@
 package com.mtvs.sciencemuseum.domain.auth.service;
 
 import com.mtvs.sciencemuseum.domain.auth.dto.JoinRequestDTO;
+import com.mtvs.sciencemuseum.domain.auth.dto.LoginedInfo;
 import com.mtvs.sciencemuseum.domain.user.entity.User;
 import com.mtvs.sciencemuseum.domain.user.exception.DuplicatedUsernameException;
 import com.mtvs.sciencemuseum.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
+    /*회원가입*/
     public void join(JoinRequestDTO dto){
 
         /*이름 중복여부 확인*/
@@ -34,5 +37,28 @@ public class AuthService {
         );
 
         userRepository.save(user);
+    }
+
+    /*로그인 한 사용자 정보 가져옴.*/
+    public LoginedInfo getLoginInfo(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication();
+
+        if(principal == null){// 인증 전
+
+            LoginedInfo anonymous = new LoginedInfo();
+            anonymous.setUsername("__SYS__ANONYMOUS");
+            anonymous.setIsLogin(false);
+            return anonymous;
+        }
+        else{
+            if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof LoginedInfo){
+                return (LoginedInfo)SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+            }
+        }
+
+        return null;
     }
 }

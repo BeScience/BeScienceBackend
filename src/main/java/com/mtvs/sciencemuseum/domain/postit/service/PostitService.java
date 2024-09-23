@@ -1,19 +1,24 @@
 package com.mtvs.sciencemuseum.domain.postit.service;
 
+import com.mtvs.sciencemuseum.domain.auth.dto.LoginedInfo;
+import com.mtvs.sciencemuseum.domain.auth.service.AuthService;
 import com.mtvs.sciencemuseum.domain.postit.dto.PostitDto;
 import com.mtvs.sciencemuseum.domain.postit.entity.Postit;
 import com.mtvs.sciencemuseum.domain.postit.repository.PostitRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class PostitService {
 
-    @Autowired
-    private PostitRepository postitRepository;
+    private final PostitRepository postitRepository;
+    private final AuthService authService;
 
     // DTO를 엔티티로 변환
     public Postit toEntity(PostitDto dto) {
@@ -37,13 +42,33 @@ public class PostitService {
 
     // 엔티티를 데이터베이스에 저장
     public Postit savePostit(Postit postit) {
+
+//        LoginedInfo loginUser = authService.getLoginInfo();
+//        log.info("[POSTIT] 포스트잇 저장: user: {}, postit: {}", loginUser.getUsername(), postit);
+        log.info("[POSTIT] 포스트잇 저장");
         return postitRepository.save(postit);
     }
 
     public List<PostitDto> getAllPostits() {
+
+//        LoginedInfo loginUser = authService.getLoginInfo();
+//        log.info("[POSTIT] 포스트잇 조회: user: {}", loginUser.getUsername());
+        log.info("[POSTIT] 포스트잇 조회.");
+
         List<Postit> postits = postitRepository.findAll();
         return  postits.stream()
                 .map(this::toDto)
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    /*포스트잇 전체 삭제*/
+    public void clearPostits() {
+
+//        LoginedInfo loginUser = authService.getLoginInfo();
+//        log.info("[POSTIT] 포스트잇 전체 삭제: user: {}", loginUser.getUsername());
+
+        log.info("[POSTIT] 포스트잇 전체 삭제");
+
+        postitRepository.deleteAll();
     }
 }
